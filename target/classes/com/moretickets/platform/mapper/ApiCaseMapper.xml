@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.moretickets.platform.mapper.ApiCaseMapper">
+
+
+    <resultMap id="Result" type="com.moretickets.platform.bean.ApiCaseBean">
+        <result property="id" column="acs_id"/>
+        <result property="apiId" column="acs_apiid"/>
+        <result property="name" column="acs_name"/>
+        <result property="body" column="acs_body"/>
+        <result property="asseertion" column="acs_asserction"/>
+        <result property="methodId" column="acs_id"/>
+        <result property="priorityId" column="acs_priorityid"/>
+        <result property="passId" column="acs_passid"/>
+        <result property="memo" column="acs_memo"/>
+        <result property="casetypeId" column="acs_typeid"/>
+        <result property="createdt" column="acs_createdt"/>
+        <result property="updatedt" column="acs_updatedt"/>
+        <result property="createuid" column="acs_createuid"/>
+        <result property="updateuid" column="acs_updateuid"/>
+    </resultMap>
+
+    <select id="getApiCase" resultMap="Result">
+        select acs_id,acs_apiid,acs_name,acs_body,
+        acs_asserction,acs_priorityid,acs_passid,acs_memo,
+        acs_createdt,acs_updatedt,acs_typeid from apicase
+        WHERE acs_id =#{id} and acs_deleted_flag =0
+    </select>
+
+
+    <select id="getApiCases" resultMap="Result">
+        select acs_id,acs_apiid,acs_name,acs_body,
+        acs_asserction,acs_priorityid,acs_passid,acs_memo,
+        acs_createdt,acs_updatedt,acs_typeid from apicase
+        where acs_deleted_flag = 0 and acs_apiid = #{apiId}
+        order by acs_id asc
+    </select>
+
+    <insert id="add" parameterType="com.moretickets.platform.bean.ApiCaseBean">
+        insert apicase(acs_apiid,acs_name,acs_body,acs_asserction,acs_priorityid,acs_passid,acs_memo,acs_createdt,acs_updatedt,acs_typeid)
+        values(#{apiId},#{name},#{body},#{asseertion},#{priorityId},#{passId},#{memo},now(),now(),#{casetypeId})
+    </insert>
+
+    <update id="update" parameterType="com.moretickets.platform.bean.ApiCaseBean">
+        update apicase set acs_apiid = #{apiId},acs_name = 'changed',acs_updatedt=now()
+        where acs_id = #{id}
+    </update>
+
+    <update id="delete" parameterType="int">
+        update apicase set acs_deleted_flag = 1,acs_updatedt=now()
+        where acs_id = #{id}
+    </update>
+
+    <delete id ="deleteByTypeid" parameterType="com.moretickets.platform.bean.ApiCaseBean">
+            delete from apicase
+            where acs_typeid = #{casetypeId} and acs_apiid= #{apiId}
+    </delete>
+
+</mapper>
